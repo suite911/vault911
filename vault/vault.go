@@ -27,20 +27,32 @@ func (v *Vault) Init(plaintext []byte, key [32]byte) *Vault {
 	binary.LittleEndian.PutUint64(buf, ts)
 	buf = append(buf, key)
 	dig := sha3.Sum256(buf)
+	auth := sha3.Sum256(plaintext)
+	plaintext = append(plaintext, auth)
 	ct := make([]byte, len(plaintext))
-	salsa20.XORKeyStream(ct, plaintext, buf[:8], dig)
+	salsa20.XORKeyStream(ct, plaintext, buf[:8], &dig)
 	v.TimeStamp = ts
 	v.Payload = ct
 	return v
 }
 
-func (v *Vault) Decrypt(key [32]byte) []byte {
+func (v *Vault) Decrypt(key [32]byte) (plaintext []byte, ok bool) {
 	ts, ct := v.TimeStamp, v.Payload
+	if len(ct) < 32 {
+		return nil, false
+	}
 	buf := make([]byte, 8, 8+len(key))
 	binary.LittleEndian.PutUint64(buf, ts)
 	buf = append(buf, key)
 	dig := sha3.Sum256(buf)
 	pt := make([]byte, len(ct))
-	salsa20.XORKeyStream(pt, ct, buf[:8], dig)
-	return pt
+	salsa20.XORKeyStream(pt, ct, buf[:8], &dig)
+	end := len(pt) - 32
+	auth := pt[end:]
+	pt = pt[:end]
+	actual := sha3.Sum256(pt)
+	if actual != auth {
+		return nil, false
+	}
+	return pt, true
 }
