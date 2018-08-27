@@ -2,7 +2,6 @@ package vault
 
 import (
 	"encoding/binary"
-	"errors"
 	"time"
 
 	"golang.org/x/crypto/salsa20"
