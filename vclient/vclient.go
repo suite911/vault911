@@ -13,7 +13,7 @@ import (
 func Post(url string, message []byte, args *fasthttp.Args, key [32]byte) (statusCode int, plaintext []bytes, err error) {
 	var v vault.Vault
 	v.Init(message, key)
-	args.Set("ts", strconv.Itoa(v.TimeStamp))
+	args.Set("ts", strconv.FormatUint(v.TimeStamp, 10))
 	args.SetBytesV("ct", v.Payload)
 	sc, body, e := fasthttp.Post(nil, url, args)
 	if e == nil && (sc < 200 || sc > 299) {
