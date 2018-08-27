@@ -10,7 +10,7 @@ import (
 
 type Key [32]byte
 
-func New(password string, salt []byte, keyFile string) (*Key, error) {
+func NewKey(password string, salt []byte, keyFile string) (*Key, error) {
 	k := new(Key)
 	e := k.Init(password, salt, keyFile)
 	return k, e
