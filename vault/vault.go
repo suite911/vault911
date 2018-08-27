@@ -13,11 +13,11 @@ type Vault struct {
 	Payload   []byte `json:"ct"` // Encrypted message ciphertext
 }
 
-func New(plaintext []byte, key [32]byte) *Vault {
+func New(plaintext []byte, key Key) *Vault {
 	return new(Vault).Init(plaintext, key)
 }
 
-func (v *Vault) Init(plaintext []byte, key [32]byte) *Vault {
+func (v *Vault) Init(plaintext []byte, key Key) *Vault {
 	its := time.Now().UTC().UnixNano()
 	if its < 0 {
 		panic("bad system time")
@@ -36,7 +36,7 @@ func (v *Vault) Init(plaintext []byte, key [32]byte) *Vault {
 	return v
 }
 
-func (v *Vault) Decrypt(key [32]byte) (plaintext []byte, ok bool) {
+func (v *Vault) Decrypt(key Key) (plaintext []byte, ok bool) {
 	ts, ct := v.TimeStamp, v.Payload
 	if len(ct) < 32 {
 		return nil, false
