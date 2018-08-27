@@ -7,12 +7,11 @@ import (
 	"strconv"
 	"unicode/utf8"
 
-	"github.com/suite911/vault911/vkey"
-	"github.com/suite911/vault911/vserver"
+	"github.com/suite911/vault911/vault"
 	"github.com/valyala/fasthttp"
 )
 
-var key vkey.Key
+var key vault.Key
 
 func main() {
 	pPort := flag.Int("p", 8080, "Port on which to listen")
@@ -29,14 +28,14 @@ func main() {
 }
 
 func handler(ctx *fasthttp.RequestCtx) {
-	b, err := vserver.Recv(ctx, key)
+	b, err := vault.Recv(ctx, key)
 	if err != nil || !utf8.Valid(b) {
 		ctx.Error("Bad Request", 400)
 		return
 	}
 	message := string(b)
 	reply := fmt.Sprintf("You said %q.", message)
-	http500, err := vserver.Reply(ctx, []byte(reply), key)
+	http500, err := vault.Reply(ctx, []byte(reply), key)
 	if err != nil {
 		log.Println(err)
 		ctx.Error(http500, 500)
