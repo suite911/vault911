@@ -7,20 +7,22 @@ import (
 	"strconv"
 	"unicode/utf8"
 
+	"github.com/suite911/vault911/vkey"
 	"github.com/suite911/vault911/vserver"
 	"github.com/valyala/fasthttp"
-	"golang.org/x/crypto/argon2"
-	"golang.org/x/crypto/sha3"
 )
 
-var key [32]byte
+var key vkey.Key
 
 func main() {
 	pPort := flag.Int("p", 8080, "Port on which to listen")
+	pKeyFile := flag.String("f", "", "Key file")
 	pPW := flag.String("pw", "password", "Password to use")
 	pSalt := flag.String("salt", "salt", "Per-user salt to use")
 	flag.Parse()
-	key = sha3.Sum256(argon2.IDKey(*pPW, *pSalt, 1, 64*1024, 4, 32))
+	if err := key.Init(*pPW, *pSalt, *pKeyFile); err != nil {
+		panic(err)
+	}
 	if err := fasthttp.ListenAndServe(":"+strconv.Itoa(*pPort), handler); err != nil {
 		panic(err)
 	}
