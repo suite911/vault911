@@ -5,8 +5,6 @@ import (
 	"strconv"
 	"unicode/utf8"
 
-	"github.com/suite911/vault911/vault"
-
 	"github.com/pkg/errors"
 	"github.com/valyala/fasthttp"
 )
