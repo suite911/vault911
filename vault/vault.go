@@ -2,7 +2,6 @@ package vault
 
 import (
 	"encoding/binary"
-	"encoding/json"
 	"errors"
 	"time"
 
