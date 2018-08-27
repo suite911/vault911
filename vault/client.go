@@ -24,9 +24,9 @@ func Post(url string, message []byte, args *fasthttp.Args, key [32]byte) (status
 	if e := json.Unmarshal(body, &reply); e != nil {
 		return sc, nil, errors.Wrap(e, "json.Unmarshal")
 	}
-	pt, ok := reply.Decode(key)
+	pt, ok := reply.Decrypt(key)
 	if !ok {
-		return sc, nil, errors.Wrap(errors.New("unable to decode reply"), "(*vault.Vault).Decode")
+		return sc, nil, errors.Wrap(errors.New("unable to decrypt reply"), "(*vault.Vault).Decrypt")
 	}
 	return sc, pt, nil
 }
