@@ -26,9 +26,9 @@ func Recv(ctx *fasthttp.RequestCtx, key [32]byte) ([]byte, error) {
 	var v Vault
 	v.TimeStamp = ts
 	v.Payload = args.Peek("ct")
-	pt, ok := v.Decode(key)
+	pt, ok := v.Decrypt(key)
 	if !ok {
-		return nil, errors.Wrap(errors.New("unable to decode message"), "(*vault.Vault).Decode")
+		return nil, errors.Wrap(errors.New("unable to decrypt message"), "(*vault.Vault).Decrypt")
 	}
 	return pt, nil
 }
