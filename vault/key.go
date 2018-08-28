@@ -25,7 +25,7 @@ func (k *Key) Init(password, salt []byte, keyFile string) error {
 	if len(a2id) != len(*k) {
 		return errors.Wrap(errors.New("wrong length of IDKey"), "argon2.IDKey")
 	}
-	copy(*k, a2id)
+	copy((*k)[:], a2id)
 	if len(keyFile) > 0 {
 		b, e := ioutil.ReadFile(keyFile)
 		if e != nil {
