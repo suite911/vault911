@@ -40,8 +40,7 @@ func Reply(ctx *fasthttp.RequestCtx, message []byte, key [32]byte) (http500 stri
 	if e != nil {
 		return "Internal Server Error: Unable to marshal JSON", errors.Wrap(e, "json.Marshal")
 	}
-	_, e := ctx.Write(b)
-	if e != nil {
+	if _, e := ctx.Write(b); e != nil {
 		return "Internal Server Error: Unable to write reply", errors.Wrap(e, "(*fasthttp.RequestCtx).Write")
 	}
 	return "", nil
