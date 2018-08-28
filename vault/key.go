@@ -1,4 +1,4 @@
-package vkey
+package vault
 
 import (
 	"io/ioutil"
