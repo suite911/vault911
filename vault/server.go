@@ -1,4 +1,4 @@
-package vclient
+package vault
 
 import (
 	"encoding/json"
