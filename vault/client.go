@@ -8,7 +8,7 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-func Post(url string, message []byte, args *fasthttp.Args, key [32]byte) (statusCode int, plaintext []bytes, err error) {
+func Post(url string, message []byte, args *fasthttp.Args, key [32]byte) (statusCode int, plaintext []byte, err error) {
 	var v Vault
 	v.Init(message, key)
 	args.Set("ts", strconv.FormatUint(v.TimeStamp, 10))
