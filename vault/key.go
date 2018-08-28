@@ -21,7 +21,7 @@ func (k *Key) Init(password, salt []byte, keyFile string) error {
 	if !utf8.Valid(password) {
 		return errors.Wrap(errors.New("password is not valid Unicode"), "utf8.Valid")
 	}
-	a2id := argon2.IDKey(password, salt, 1, 64*1024, 4, len(*k))
+	a2id := argon2.IDKey(password, salt, 1, 64*1024, 4, uint32(len(*k)))
 	if len(a2id) != len(*k) {
 		return errors.Wrap(errors.New("wrong length of IDKey"), "argon2.IDKey")
 	}
