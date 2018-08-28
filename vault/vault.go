@@ -25,10 +25,10 @@ func (v *Vault) Init(plaintext []byte, key Key) *Vault {
 	ts := uint64(its)
 	buf := make([]byte, 8, 8+len(key))
 	binary.LittleEndian.PutUint64(buf, ts)
-	buf = append(buf, key)
+	buf = append(buf, key...)
 	dig := sha3.Sum256(buf)
 	auth := sha3.Sum256(plaintext)
-	plaintext = append(plaintext, auth)
+	plaintext = append(plaintext, auth...)
 	ct := make([]byte, len(plaintext))
 	salsa20.XORKeyStream(ct, plaintext, buf[:8], &dig)
 	v.TimeStamp = ts
@@ -43,7 +43,7 @@ func (v *Vault) Decrypt(key Key) (plaintext []byte, ok bool) {
 	}
 	buf := make([]byte, 8, 8+len(key))
 	binary.LittleEndian.PutUint64(buf, ts)
-	buf = append(buf, key)
+	buf = append(buf, key...)
 	dig := sha3.Sum256(buf)
 	pt := make([]byte, len(ct))
 	salsa20.XORKeyStream(pt, ct, buf[:8], &dig)
@@ -51,7 +51,7 @@ func (v *Vault) Decrypt(key Key) (plaintext []byte, ok bool) {
 	auth := pt[end:]
 	pt = pt[:end]
 	actual := sha3.Sum256(pt)
-	if actual != auth {
+	if actual[:] != auth {
 		return nil, false
 	}
 	return pt, true
