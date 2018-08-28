@@ -52,7 +52,7 @@ func (v *Vault) Decrypt(key Key) (plaintext []byte, ok bool) {
 	auth := pt[end:]
 	pt = pt[:end]
 	actual := sha3.Sum256(pt)
-	if !bytes.Equal(actual, auth) {
+	if !bytes.Equal(actual[:], auth) {
 		return nil, false
 	}
 	return pt, true
